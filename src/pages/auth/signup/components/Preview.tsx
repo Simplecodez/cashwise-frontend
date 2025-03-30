@@ -49,7 +49,9 @@ export default function PreviewPage({
           <div className="border-b pb-2">
             <p className="text-sm text-muted-foreground">Date of Birth</p>
             <p className="font-medium">
-              {formData.dateOfBirth.toISOString().split('T')[0]}
+              {formData.dateOfBirth instanceof Date
+                ? formData.dateOfBirth.toISOString().split('T')[0]
+                : (formData.dateOfBirth as string).split('T')[0]}
             </p>
           </div>
           <div className="border-b pb-2">
@@ -91,7 +93,7 @@ export default function PreviewPage({
         <Button
           type="button"
           variant="outline"
-          className="border-emerald-600 text-base text-emerald-600 shadow-md hover:bg-emerald-100"
+          className="rounded-2xl border-emerald-600 text-base text-emerald-600 shadow-md hover:bg-emerald-100"
           onClick={handlePrev}
         >
           Edit
@@ -99,7 +101,7 @@ export default function PreviewPage({
         <Button
           type="submit"
           disabled={isLoading}
-          className="block rounded-2xl bg-emerald-500 px-4 py-2 font-outfit text-base text-white hover:bg-emerald-600 focus:bg-emerald-600 active:bg-emerald-700 sm:w-1/4"
+          className="block rounded-2xl bg-emerald-500 px-4 py-2 font-play text-base text-white hover:bg-emerald-600 focus:bg-emerald-600 active:bg-emerald-700 sm:w-1/4"
         >
           {isLoading ? (
             <span>

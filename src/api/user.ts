@@ -8,9 +8,13 @@ import { useMemo } from 'react';
 import { queryKeys } from '../react-query';
 import { endpoints, mutator } from '@/utils/helper';
 
-interface ISendOtpPayload {
+interface IPhoneOtpPayload {
   phoneNumber: string;
   countryCode: string;
+}
+
+interface IEmailOtpPayload {
+  email: string;
 }
 
 export interface IVerifyOtpPayload {
@@ -66,11 +70,16 @@ function useBaseMutation<TResponse, TVariables>(url: string) {
   );
 }
 
-export function useSendOtp() {
+export function useSendOtp(type: 'email' | 'phonenumber') {
+  const url =
+    type === 'email'
+      ? endpoints.auth.signup.resendEmailVerificationOtp
+      : endpoints.auth.signup.sendPhoneNumberOtp;
   return useBaseMutation<
-    { status: string; data: { message: string; sessionId: string } },
-    ISendOtpPayload
-  >(endpoints.auth.signup.sendPhoneNumberOtp);
+    | { status: string; data: { message: string; sessionId: string } }
+    | { status: string; message: string },
+    IPhoneOtpPayload | IEmailOtpPayload
+  >(url);
 }
 
 export function useVerifyOtp(type: 'email' | 'phonenumber') {
@@ -80,13 +89,14 @@ export function useVerifyOtp(type: 'email' | 'phonenumber') {
       : endpoints.auth.signup.verifyPhoneNumber;
 
   return useBaseMutation<
-    { status: string; verified: boolean },
-    IVerifyOtpPayload
+    { status: string; verified: boolean; message?: string },
+    IVerifyOtpPayload | { email: string; otp: string }
   >(url);
 }
 
 export function useSignup() {
-  return useBaseMutation<{ status: string; message: string }, ISignupPayload>(
-    endpoints.auth.signup.completeSignup
-  );
+  return useBaseMutation<
+    { status: string; message: string; code?: string },
+    ISignupPayload
+  >(endpoints.auth.signup.completeSignup);
 }

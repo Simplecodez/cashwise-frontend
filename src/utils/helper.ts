@@ -50,7 +50,8 @@ export const endpoints = {
       sendPhoneNumberOtp: '/auth/send-phone-otp',
       verifyPhoneNumber: '/auth/verify-phone-number',
       completeSignup: '/auth/register',
-      verifyEmail: '/auth/verify-email'
+      verifyEmail: '/auth/verify-email',
+      resendEmailVerificationOtp: '/auth/resend-email-otp'
     },
     signin: '/auth/signin'
   }

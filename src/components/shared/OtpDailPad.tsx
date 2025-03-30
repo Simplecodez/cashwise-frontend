@@ -30,11 +30,14 @@ export function OtpDailPad({ value, onChange, onBlur }: IDialPadProps) {
       numInputs={6}
       shouldAutoFocus={true}
       inputStyle={inputStyle}
+      inputType="number"
       containerStyle={{ display: 'flex', justifyContent: 'center' }}
       renderInput={(props, index) => (
         <input
           {...props}
           onBlur={onBlur}
+          inputMode="numeric"
+          pattern="[0-9]*"
           name={'otp'}
           style={{
             ...props.style,

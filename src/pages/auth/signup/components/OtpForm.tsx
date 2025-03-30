@@ -1,8 +1,8 @@
 import { IVerifyOtpPayload } from '@/api/user';
 import { OtpDailPad } from '@/components/shared/OtpDailPad';
 import { Button } from '@/components/ui/button';
-import { AppContextType } from '@/context/AppContext';
-import { useAppContext } from '@/context/useContext';
+import { useSignupContext } from '@/context/signup-context/useContext';
+import { SignupContextType } from '@/context/signup-context/SignupContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { UseMutateAsyncFunction } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -21,42 +21,64 @@ const otpSchema = z.object({
 interface OtpFormValues {
   otp: string;
 }
-interface IOtpFormProps {
+
+export interface IOtpFormProps {
   isLoading: boolean;
   sessionId?: string;
+  entityDetails?: Record<string, string>;
   verifyOtp: UseMutateAsyncFunction<
     {
       status: string;
       verified: boolean;
+      message?: string;
     },
     any,
-    IVerifyOtpPayload,
+    IVerifyOtpPayload | { email: string; otp: string },
     unknown
   >;
 }
 
-export function OtpForm({ isLoading, verifyOtp, sessionId }: IOtpFormProps) {
-  const { dispatch } = useAppContext() as AppContextType;
+export function OtpForm({
+  isLoading,
+  verifyOtp,
+  entityDetails,
+  sessionId
+}: IOtpFormProps) {
+  const { setIsPhoneVerified } = useSignupContext() as SignupContextType;
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid }
+    formState: { errors }
   } = useForm<OtpFormValues>({
     resolver: zodResolver(otpSchema),
     defaultValues: { otp: '' }
   });
   const onSubmit = async (data: OtpFormValues) => {
-    console.log('OTP Submitted:', data);
     try {
-      const verificationResult = await verifyOtp({
-        otp: data.otp,
-        sessionId: sessionId as string
-      });
+      let verificationResult = null;
+      if (entityDetails?.hasOwnProperty('email')) {
+        verificationResult = await verifyOtp({
+          email: entityDetails.email,
+          otp: data.otp
+        });
+      } else {
+        verificationResult = await verifyOtp({
+          otp: data.otp,
+          sessionId: sessionId as string
+        });
+      }
+
       if (verificationResult.status === 'success') {
-        dispatch({ type: 'phone-verification' });
-        navigate(`/auth/signup/complete-signup?sessionId=${sessionId}`);
+        enqueueSnackbar(`${verificationResult?.message}. Redirecting...`, {
+          variant: 'success'
+        });
+        setTimeout(() => {
+          setIsPhoneVerified(true);
+
+          navigate(`/auth/signup/complete-signup`);
+        }, 3000);
       } else if (verificationResult.status === 'fail') {
         return enqueueSnackbar(`${(verificationResult as any).message}.`, {
           variant: 'error'
@@ -92,9 +114,9 @@ export function OtpForm({ isLoading, verifyOtp, sessionId }: IOtpFormProps) {
       {errors.otp && <p className="text-red-500">{errors.otp.message}</p>}
 
       <Button
-        disabled={!isValid}
+        disabled={isLoading}
         type="submit"
-        className="block w-full rounded-2xl bg-emerald-500 px-4 py-2 font-outfit text-sm text-white hover:bg-emerald-600 focus:bg-emerald-600 active:bg-emerald-700 sm:w-1/4"
+        className="block w-full rounded-2xl bg-emerald-500 px-4 py-2 font-play text-sm text-white hover:bg-emerald-600 focus:bg-emerald-600 active:bg-emerald-700 sm:w-1/4"
       >
         {isLoading ? (
           <span>

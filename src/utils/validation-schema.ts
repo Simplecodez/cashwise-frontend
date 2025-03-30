@@ -27,7 +27,7 @@ const stepOneSchema = zod.object({
     .min(new Date('1923-01-01'), {
       message: 'Date of birth cannot be before 1923'
     }),
-  gender: zod.enum(['male', 'female'])
+  gender: zod.enum(['male', 'female'], { message: 'Please select a gender' })
 });
 
 const stepTwoSchema = zod.object({

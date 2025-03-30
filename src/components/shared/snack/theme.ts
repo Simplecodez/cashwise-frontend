@@ -26,7 +26,7 @@ export const theme = {
   },
   spacing: (factor: number) => `${0.5 * factor}rem`, // Balanced spacing
   typography: {
-    fontFamily: "'Outfit', sans-serif",
+    fontFamily: "'Play', sans-serif",
     fontSize: 16,
     fontWeight: {
       light: 300,

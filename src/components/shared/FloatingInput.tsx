@@ -2,9 +2,10 @@ import { Path, UseFormReturn } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormMessage } from '../ui/form';
 import { FloatingLabelInput } from '../ui/floating-input';
 
-interface IInputProps<T extends Record<string, any>> {
-  form: UseFormReturn<T>;
-  name: Path<T>;
+interface IInputProps {
+  form: UseFormReturn<any>;
+  inputMode?: string;
+  name: Path<any>;
   label?: string;
   id: string;
   type?: string;
@@ -12,23 +13,25 @@ interface IInputProps<T extends Record<string, any>> {
   includeMessage?: boolean;
 }
 
-export function FloatingInput<T extends Record<string, any>>({
+export function FloatingInput({
   form,
   name,
   id,
+  inputMode,
   label,
   type = 'text',
   className,
   includeMessage = false
-}: IInputProps<T>) {
+}: IInputProps) {
   return (
     <FormField
       control={form.control}
       name={name}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className="w-full">
           <FormControl>
             <FloatingLabelInput
+              inputMode={inputMode ? (inputMode as 'numeric') : 'text'}
               className={className}
               {...field}
               type={type}

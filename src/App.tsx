@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Signup } from './pages/auth/signup/Signup';
 import { Signin } from './pages/auth/signin/Signin';
 import { ValidatePhonenumber } from './pages/auth/signup/components/PhoneNumberValidation';
-import { AppContextProvider } from './context/AppContext';
+import { AppContextProvider } from './context/app-context/AppContext';
 import { CompleteSignup } from './pages/auth/signup/CompleteSignup';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './react-query';

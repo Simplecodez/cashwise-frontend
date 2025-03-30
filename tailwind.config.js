@@ -5,7 +5,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        outfit: ['Outfit']
+        outfit: ['Outfit'],
+        play: ['Play']
       },
       borderRadius: {
         lg: 'var(--radius)',

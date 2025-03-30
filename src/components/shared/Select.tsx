@@ -21,7 +21,7 @@ interface ISelectProps<T extends Record<string, any>> {
   placeholder?: string;
   id: string;
   className?: string;
-  options: IOption[]; // ✅ Pass in dynamic options
+  options: IOption[];
 }
 
 export function Select<T extends Record<string, any>>({
